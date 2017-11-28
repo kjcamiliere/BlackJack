@@ -1,39 +1,106 @@
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Scanner;
+
 
 public class BlackJack {
     public static void main(String [] args){
+        Scanner scanner = new Scanner(System.in);
         Deck mainDeck = new Deck();
+        Hand playerHand = new Hand();
+        Hand computerHand = new Hand();
+        boolean endRound = false;
+
         mainDeck.completeDeck();
+        mainDeck.shuffleDeck();
 
-        mainDeck.showOriginalDeck();
+        // Deal two cards to player
+        playerHand.addToHand(mainDeck.getNextCard());
+        playerHand.addToHand(mainDeck.getNextCard());
+
+        playerHand.showHand();
+        System.out.println(playerHand.getValue());
+
+        while (endRound == false) {
+            if (playerHand.getValue() > 21) {
+                endRound = true;
+                System.out.println("BUST!");
+            }
+            else if (playerHand.getValue() == 21) {
+
+                if (playerHand.getNumberOfCards() == 2) {
+                    //blackjack
+
+                }
+                else {
+                    // 21 but not blackjack
+
+                }
 
 
+            }
+            else {
+                System.out.println("1. Hit");
+                System.out.println("2. Stand");
+                int userSelect = scanner.nextInt();
+                if (userSelect == 1) {
+                    // user hit
+                    playerHand.addToHand(mainDeck.getNextCard());
+                    playerHand.showHand();
+                    System.out.println("Value: " + playerHand.getValue());
+
+                } else if (userSelect == 2) {
+                    // user stand
+                    System.out.println("Value: " + playerHand.getValue());
+                    endRound = true;
+                }
+                else {
+                    System.out.println("Enter a Valid Number! ");
+                }
+            }
+        }
+
+        // Computer Player
+        // Hide one card from player
+        // Computer will play to beat the player, after the player has chosen to stand
+
+
+
+
+        // Deal two cards to computer
+
+        // show Value of cards
+
+        // Choice, Hit or Stand
     }
-    // Create Deck
 
 
-
-    //Deal Cards
-
-
-    //Allow User to draw a card
-
-    // Check for 21
 
 }
 
 class Hand {
-    int value;
-    Card hand[];
+
+    ArrayList<Card> Hand = new ArrayList<Card>();
 
     public int getValue () {
+        int value = 0;
+
+
+        for (Card c : Hand) {
+            value += c.getValue();
+        }
+
         return value;
     }
-    public void addToHand() {
-
+    public void addToHand(Card cardAdded) {
+        Hand.add(cardAdded);
     }
     public void showHand(){
-
+        System.out.println(Hand.toString());
+    }
+    public int getNumberOfCards(){
+        return Hand.size();
     }
 }
 class Player {
@@ -66,17 +133,14 @@ class Dealer {
 
 }
 class Deck {
-    Card cards[] = new Card[53];
-    Card shuffledCards[];
-    Random random;
-    int NextItem;
+    private Card cards[] = new Card[53];
+    private int NextItem = 0;
+    private ArrayList<Card> DeckList = new ArrayList<Card>();
 
-    Card[] Diamonds = new Card[13];
-    Card[] Hearts = new Card[13];
-    Card[] Spades = new Card[13];
-    Card[] Clubs = new Card[13];
-
-
+    private Card[] Diamonds = new Card[13];
+    private Card[] Hearts = new Card[13];
+    private Card[] Spades = new Card[13];
+    private Card[] Clubs = new Card[13];
 
     public void resetDeck() {
 
@@ -84,30 +148,20 @@ class Deck {
 
     public int getDeckSize() {
         return cards.length;
-
     }
 
     public Card getNextCard() {
-        return cards[NextItem];
-
+        // return card
+        NextItem++;
+        return DeckList.get(NextItem);
     }
 
     public void shuffleDeck() {
-
-
-
+        Collections.shuffle(DeckList);
     }
 
-    public void showOriginalDeck() {
-        int x = 0;
-        for (x = 0; x < 52; x++) {
-            System.out.println(cards[x].getName() + " of " + cards[x].getSuit()+" Value:"+cards[x].getValue());
-        }
-
-    }
-
-    public void showShuffledDeck() {
-
+    public void showDeck() {
+        System.out.println(DeckList.toString());
     }
 
     public void completeDeck() {
@@ -130,8 +184,8 @@ class Deck {
 
         }while (n < 52);
 
-
-
+        //Convert to arrayList for future operations
+        DeckList = new ArrayList<Card>(Arrays.asList(cards));
 
     }
 
@@ -285,6 +339,10 @@ class Card {
     }
     public void setSuit(String x) {
         suit = x;
+    }
+    public String toString(){
+        String fullCardName = getName() + " of " + getSuit();
+        return fullCardName;
     }
 }
 
